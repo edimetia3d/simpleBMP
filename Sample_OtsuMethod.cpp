@@ -1,7 +1,7 @@
 #include "simpleBMP.h"
 #include <math.h>
 
-void otsu(vector<unsigned char>::iterator iterbeg, vector<unsigned char>::iterator iterend) {
+void otsu(uint8_t * iterbeg, uint8_t * iterend) {
 
 	int numofpixal = iterend - iterbeg;
 	double pi[256] = {0};
@@ -41,7 +41,7 @@ void otsu(vector<unsigned char>::iterator iterbeg, vector<unsigned char>::iterat
 	bestk /= numofbestk;
 	for (int i = 0; i < numofpixal; i++) {
 		int value = *(iterbeg + i);
-		*(iterbeg + i) = ((unsigned char)(value > bestk)) * 255;
+		*(iterbeg + i) = ((uint8_t)(value > bestk)) * 255;
 	}
 }
 
@@ -49,13 +49,13 @@ int main(int argc, char* argv[]) {
 	if (argc == 1) {
 		return 0;
 	}
-	ClImgBMP img;
-	img.LoadImage(argv[1]);
-	otsu(img.imgData.begin(), img.imgData.end());
-	
-	string path = argv[1];
+	ClImgBMP grayscale_img;
+	grayscale_img.LoadImage(argv[1]);
+	otsu(&grayscale_img.imgData[0], &grayscale_img.imgData[0]+grayscale_img.imgData.size());
+
+	std::string path = argv[1];
 	path.insert(path.size() - 4, "[otsu]");
-	img.SaveImage(path.c_str());
+	grayscale_img.SaveImage(path.c_str());
 	return 1;
 }
 
